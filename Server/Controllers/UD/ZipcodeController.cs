@@ -37,5 +37,163 @@ namespace DOOR.Server.Controllers.UD
         public ZipcodeController(DOOROracleContext DBcontext, OraTransMsgs _OraTransMsgs) : base(DBcontext, _OraTransMsgs)
         {
         }
+
+        [HttpGet]
+        [Route("GetZipcode")]
+        public async Task<IActionResult> GetZipcode()
+        {
+            List<ZipcodeDTO> lst = await _context.Zipcodes
+                .Select(sp => new ZipcodeDTO
+                {
+                    City = sp.City,
+                    CreatedBy = sp.CreatedBy,
+                    CreatedDate = sp.CreatedDate,
+                    ModifiedBy = sp.ModifiedBy,
+                    ModifiedDate = sp.ModifiedDate,
+                    State = sp.State,
+                    Zip = sp.Zip
+
+                }).ToListAsync();
+            return Ok(lst);
+        }
+
+
+        [HttpGet]
+        [Route("GetZipcode/{_Zip}")]
+        public async Task<IActionResult> GetZipcode(string _Zip)
+        {
+            ZipcodeDTO? lst = await _context.Zipcodes
+                .Where(x => x.Zip == _Zip)
+                .Select(sp => new ZipcodeDTO
+                {
+                    City = sp.City,
+                    CreatedBy = sp.CreatedBy,
+                    CreatedDate = sp.CreatedDate,
+                    ModifiedBy = sp.ModifiedBy,
+                    ModifiedDate = sp.ModifiedDate,
+                    State = sp.State,
+                    Zip = sp.Zip
+
+                }).FirstOrDefaultAsync();
+            return Ok(lst);
+        }
+
+
+        [HttpPost]
+        [Route("PostZipcode")]
+        public async Task<IActionResult> PostZipcode([FromBody] ZipcodeDTO _ZipcodeDTO)
+        {
+            try
+            {
+                Zipcode c = await _context.Zipcodes.Where(x => x.Zip == _ZipcodeDTO.Zip).FirstOrDefaultAsync();
+
+                if (c == null)
+                {
+                    c = new Zipcode
+                    {
+                        City = _ZipcodeDTO.City,
+                        CreatedBy = _ZipcodeDTO.CreatedBy,
+                        CreatedDate = _ZipcodeDTO.CreatedDate,
+                        ModifiedBy = _ZipcodeDTO.ModifiedBy,
+                        ModifiedDate = _ZipcodeDTO.ModifiedDate,
+                        State = _ZipcodeDTO.State,
+                        Zip = _ZipcodeDTO.Zip
+                    };
+                    _context.Zipcodes.Add(c);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            catch (DbUpdateException Dex)
+            {
+                List<OraError> DBErrors = ErrorHandling.TryDecodeDbUpdateException(Dex, _OraTranslateMsgs);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, Newtonsoft.Json.JsonConvert.SerializeObject(DBErrors));
+            }
+            catch (Exception ex)
+            {
+                _context.Database.RollbackTransaction();
+                List<OraError> errors = new List<OraError>();
+                errors.Add(new OraError(1, ex.Message.ToString()));
+                string ex_ser = Newtonsoft.Json.JsonConvert.SerializeObject(errors);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, ex_ser);
+            }
+
+            return Ok();
+        }
+
+
+
+        [HttpPut]
+        [Route("PutZipcode")]
+        public async Task<IActionResult> PutZipcode([FromBody] ZipcodeDTO _ZipcodeDTO)
+        {
+            try
+            {
+                Zipcode c = await _context.Zipcodes.Where(x => x.Zip == _ZipcodeDTO.Zip).FirstOrDefaultAsync();
+
+                if (c != null)
+                {
+                    c.City = _ZipcodeDTO.City;
+                    c.CreatedBy = _ZipcodeDTO.CreatedBy;
+                    c.CreatedDate = _ZipcodeDTO.CreatedDate;
+                    c.ModifiedBy = _ZipcodeDTO.ModifiedBy;
+                    c.ModifiedDate = _ZipcodeDTO.ModifiedDate;
+                    c.State = _ZipcodeDTO.State;
+                    c.Zip = _ZipcodeDTO.Zip;
+
+                    _context.Zipcodes.Update(c);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            catch (DbUpdateException Dex)
+            {
+                List<OraError> DBErrors = ErrorHandling.TryDecodeDbUpdateException(Dex, _OraTranslateMsgs);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, Newtonsoft.Json.JsonConvert.SerializeObject(DBErrors));
+            }
+            catch (Exception ex)
+            {
+                _context.Database.RollbackTransaction();
+                List<OraError> errors = new List<OraError>();
+                errors.Add(new OraError(1, ex.Message.ToString()));
+                string ex_ser = Newtonsoft.Json.JsonConvert.SerializeObject(errors);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, ex_ser);
+            }
+
+            return Ok();
+        }
+
+
+        [HttpDelete]
+        [Route("DeleteZipcode/{_Zip}")]
+        public async Task<IActionResult> DeleteZipcode(string _Zip)
+        {
+            try
+            {
+                Zipcode c = await _context.Zipcodes.Where(x => x.Zip == _Zip).FirstOrDefaultAsync();
+
+                if (c != null)
+                {
+                    _context.Zipcodes.Remove(c);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            catch (DbUpdateException Dex)
+            {
+                List<OraError> DBErrors = ErrorHandling.TryDecodeDbUpdateException(Dex, _OraTranslateMsgs);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, Newtonsoft.Json.JsonConvert.SerializeObject(DBErrors));
+            }
+            catch (Exception ex)
+            {
+                _context.Database.RollbackTransaction();
+                List<OraError> errors = new List<OraError>();
+                errors.Add(new OraError(1, ex.Message.ToString()));
+                string ex_ser = Newtonsoft.Json.JsonConvert.SerializeObject(errors);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, ex_ser);
+            }
+
+            return Ok();
+        }
     }
 }
