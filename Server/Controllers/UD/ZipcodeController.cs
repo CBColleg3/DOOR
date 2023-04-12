@@ -46,10 +46,6 @@ namespace DOOR.Server.Controllers.UD
                 .Select(sp => new ZipcodeDTO
                 {
                     City = sp.City,
-                    CreatedBy = sp.CreatedBy,
-                    CreatedDate = sp.CreatedDate,
-                    ModifiedBy = sp.ModifiedBy,
-                    ModifiedDate = sp.ModifiedDate,
                     State = sp.State,
                     Zip = sp.Zip
 
@@ -67,10 +63,6 @@ namespace DOOR.Server.Controllers.UD
                 .Select(sp => new ZipcodeDTO
                 {
                     City = sp.City,
-                    CreatedBy = sp.CreatedBy,
-                    CreatedDate = sp.CreatedDate,
-                    ModifiedBy = sp.ModifiedBy,
-                    ModifiedDate = sp.ModifiedDate,
                     State = sp.State,
                     Zip = sp.Zip
 
@@ -85,17 +77,14 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Zipcode c = await _context.Zipcodes.Where(x => x.Zip == _ZipcodeDTO.Zip).FirstOrDefaultAsync();
+                Zipcode? c = await _context.Zipcodes
+                    .Where(x => x.Zip == _ZipcodeDTO.Zip).FirstOrDefaultAsync();
 
                 if (c == null)
                 {
                     c = new Zipcode
                     {
                         City = _ZipcodeDTO.City,
-                        CreatedBy = _ZipcodeDTO.CreatedBy,
-                        CreatedDate = _ZipcodeDTO.CreatedDate,
-                        ModifiedBy = _ZipcodeDTO.ModifiedBy,
-                        ModifiedDate = _ZipcodeDTO.ModifiedDate,
                         State = _ZipcodeDTO.State,
                         Zip = _ZipcodeDTO.Zip
                     };
@@ -129,15 +118,11 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Zipcode c = await _context.Zipcodes.Where(x => x.Zip == _ZipcodeDTO.Zip).FirstOrDefaultAsync();
+                Zipcode? c = await _context.Zipcodes.Where(x => x.Zip == _ZipcodeDTO.Zip).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
                     c.City = _ZipcodeDTO.City;
-                    c.CreatedBy = _ZipcodeDTO.CreatedBy;
-                    c.CreatedDate = _ZipcodeDTO.CreatedDate;
-                    c.ModifiedBy = _ZipcodeDTO.ModifiedBy;
-                    c.ModifiedDate = _ZipcodeDTO.ModifiedDate;
                     c.State = _ZipcodeDTO.State;
                     c.Zip = _ZipcodeDTO.Zip;
 
@@ -170,7 +155,7 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Zipcode c = await _context.Zipcodes.Where(x => x.Zip == _Zip).FirstOrDefaultAsync();
+                Zipcode? c = await _context.Zipcodes.Where(x => x.Zip == _Zip).FirstOrDefaultAsync();
 
                 if (c != null)
                 {

@@ -66,11 +66,11 @@ namespace DOOR.Server.Controllers.UD
         }
 
         [HttpGet]
-        [Route("GetStudent/{_StudentID}")]
-        public async Task<IActionResult> GetStudent(int _StudentID)
+        [Route("GetStudent/{_StudentId}")]
+        public async Task<IActionResult> GetStudent(int _StudentId)
         {
             StudentDTO? lst = await _context.Students
-                .Where(x => x.StudentId == _StudentID)
+                .Where(x => x.StudentId == _StudentId)
                 .Select(sp => new StudentDTO
                 {
                     CreatedBy = sp.CreatedBy,
@@ -98,7 +98,9 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Student c = await _context.Students.Where(x => x.StudentId == _StudentDTO.StudentId).FirstOrDefaultAsync();
+                Student? c = await _context.Students
+                    .Where(x => x.StudentId == _StudentDTO.StudentId)
+                    .FirstOrDefaultAsync();
 
                 if (c == null)
                 {
@@ -149,7 +151,9 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Student s = await _context.Students.Where(x => x.StudentId == _StudentDTO.StudentId).FirstOrDefaultAsync();
+                Student? s = await _context.Students
+                    .Where(x => x.StudentId == _StudentDTO.StudentId)
+                    .FirstOrDefaultAsync();
 
                 if (s != null)
                 {
@@ -193,11 +197,13 @@ namespace DOOR.Server.Controllers.UD
 
         [HttpDelete]
         [Route("DeleteStudent/{_StudentID}")]
-        public async Task<IActionResult> DeleteStudent(int _StudentID)
+        public async Task<IActionResult> DeleteStudent(int _StudentId)
         {
             try
             {
-                Student s = await _context.Students.Where(x => x.StudentId == _StudentID).FirstOrDefaultAsync();
+                Student? s = await _context.Students
+                    .Where(x => x.StudentId == _StudentId)
+                    .FirstOrDefaultAsync();
 
                 if (s != null)
                 {

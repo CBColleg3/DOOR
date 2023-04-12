@@ -65,11 +65,12 @@ namespace DOOR.Server.Controllers.UD
 
 
         [HttpGet]
-        [Route("GetInstructor/{_InstructorId}")]
-        public async Task<IActionResult> GetInstructor(int _InstructorId)
+        [Route("GetInstructor/{_InstructorId}/{_SchoolId}")]
+        public async Task<IActionResult> GetInstructor(int _InstructorId, int _SchoolId)
         {
             InstructorDTO? lst = await _context.Instructors
                 .Where(x => x.InstructorId == _InstructorId)
+                .Where(x => x.SchoolId == _SchoolId)
                 .Select(sp => new InstructorDTO
                 {
                     CreatedBy = sp.CreatedBy,
@@ -96,7 +97,10 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Instructor c = await _context.Instructors.Where(x => x.InstructorId == _InstructorDTO.InstructorId).FirstOrDefaultAsync();
+                Instructor? c = await _context.Instructors
+                    .Where(x => x.InstructorId == _InstructorDTO.InstructorId)
+                    .Where(x => x.InstructorId == _InstructorDTO.SchoolId)
+                    .FirstOrDefaultAsync();
 
                 if (c == null)
                 {
@@ -150,7 +154,10 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Instructor c = await _context.Instructors.Where(x => x.InstructorId == _InstructorDTO.InstructorId).FirstOrDefaultAsync();
+                Instructor? c = await _context.Instructors
+                    .Where(x => x.InstructorId == _InstructorDTO.InstructorId)
+                    .Where(x => x.SchoolId == _InstructorDTO.SchoolId)
+                    .FirstOrDefaultAsync();
 
                 if (c != null)
                 {
@@ -192,11 +199,14 @@ namespace DOOR.Server.Controllers.UD
 
         [HttpDelete]
         [Route("DeleteInstructor/{_InstructorId}")]
-        public async Task<IActionResult> DeleteInstructor(int _InstructorId)
+        public async Task<IActionResult> DeleteInstructor(int _InstructorId, int _SchoolId)
         {
             try
             {
-                Instructor c = await _context.Instructors.Where(x => x.InstructorId == _InstructorId).FirstOrDefaultAsync();
+                Instructor? c = await _context.Instructors
+                    .Where(x => x.InstructorId == _InstructorId)
+                    .Where(x => x.SchoolId == _SchoolId)
+                    .FirstOrDefaultAsync();
 
                 if (c != null)
                 {

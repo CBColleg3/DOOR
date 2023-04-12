@@ -47,12 +47,8 @@ namespace DOOR.Server.Controllers.UD
                 .Select(sp => new GradeDTO
                 {
                     Comments = sp.Comments,
-                    CreatedBy = sp.CreatedBy,
-                    CreatedDate = sp.CreatedDate,
                     GradeCodeOccurrence = sp.GradeCodeOccurrence,
                     GradeTypeCode = sp.GradeTypeCode,
-                    ModifiedBy = sp.ModifiedBy,
-                    ModifiedDate = sp.ModifiedDate,
                     NumericGrade = sp.NumericGrade,
                     SchoolId = sp.SchoolId,
                     SectionId = sp.SectionId,
@@ -64,20 +60,20 @@ namespace DOOR.Server.Controllers.UD
 
 
         [HttpGet]
-        [Route("GetGrade/{_SchoolId}")]
-        public async Task<IActionResult> GetGrade(int _SchoolId)
+        [Route("GetGrade/{_SchoolId}/{_StudentId}/{_SectionId}/{_GradeTypeCode}/{_GradeCodeOccurrence}")]
+        public async Task<IActionResult> GetGrade(int _SchoolId, int _StudentId, int _SectionId, string _GradeTypeCode, int _GradeCodeOccurrence)
         {
             GradeDTO? lst = await _context.Grades
                 .Where(x => x.SchoolId == _SchoolId)
+                .Where(x => x.StudentId == _StudentId)
+                .Where(x => x.SectionId == _SectionId)
+                .Where(x => x.GradeTypeCode == _GradeTypeCode)
+                .Where(x => x.GradeCodeOccurrence == _GradeCodeOccurrence)
                 .Select(sp => new GradeDTO
                 {
                     Comments = sp.Comments,
-                    CreatedBy = sp.CreatedBy,
-                    CreatedDate = sp.CreatedDate,
                     GradeCodeOccurrence = sp.GradeCodeOccurrence,
                     GradeTypeCode = sp.GradeTypeCode,
-                    ModifiedBy = sp.ModifiedBy,
-                    ModifiedDate = sp.ModifiedDate,
                     NumericGrade = sp.NumericGrade,
                     SchoolId = sp.SchoolId,
                     SectionId = sp.SectionId,
@@ -94,23 +90,24 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Grade c = await _context.Grades.Where(x => x.SchoolId == _GradeDTO.SchoolId).FirstOrDefaultAsync();
+                Grade? c = await _context.Grades
+                .Where(x => x.SchoolId == _GradeDTO.SchoolId)
+                .Where(x => x.StudentId == _GradeDTO.StudentId)
+                .Where(x => x.SectionId == _GradeDTO.SectionId)
+                .Where(x => x.GradeTypeCode == _GradeDTO.GradeTypeCode)
+                .Where(x => x.GradeCodeOccurrence == _GradeDTO.GradeCodeOccurrence).FirstOrDefaultAsync();
 
                 if (c == null)
                 {
                     c = new Grade
                     {
                         Comments = _GradeDTO.Comments,
-                        CreatedBy = _GradeDTO.CreatedBy,
-                        CreatedDate = _GradeDTO.CreatedDate,
                         GradeCodeOccurrence = _GradeDTO.GradeCodeOccurrence,
                         GradeTypeCode = _GradeDTO.GradeTypeCode,
-                        ModifiedBy = _GradeDTO.ModifiedBy,
-                        ModifiedDate = _GradeDTO.ModifiedDate,
                         NumericGrade = _GradeDTO.NumericGrade,
                         SchoolId = _GradeDTO.SchoolId,
                         SectionId = _GradeDTO.SectionId,
-                        StudentId = _GradeDTO.StudentId,
+                        StudentId= _GradeDTO.StudentId,
                     };
                     _context.Grades.Add(c);
                     await _context.SaveChangesAsync();
@@ -147,17 +144,17 @@ namespace DOOR.Server.Controllers.UD
         {
             try
             {
-                Grade c = await _context.Grades.Where(x => x.SchoolId == _GradeDTO.SchoolId).FirstOrDefaultAsync();
+                Grade? c = await _context.Grades.Where(x => x.SchoolId == _GradeDTO.SchoolId)
+                                    .Where(x => x.StudentId == _GradeDTO.StudentId)
+                .Where(x => x.SectionId == _GradeDTO.SectionId)
+                .Where(x => x.GradeTypeCode == _GradeDTO.GradeTypeCode)
+                .Where(x => x.GradeCodeOccurrence == _GradeDTO.GradeCodeOccurrence).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
                     c.Comments = _GradeDTO.Comments;
-                    c.CreatedBy = _GradeDTO.CreatedBy;
-                    c.CreatedDate = _GradeDTO.CreatedDate;
                     c.GradeCodeOccurrence = _GradeDTO.GradeCodeOccurrence;
                     c.GradeTypeCode = _GradeDTO.GradeTypeCode;
-                    c.ModifiedBy = _GradeDTO.ModifiedBy;
-                    c.ModifiedDate = _GradeDTO.ModifiedDate;
                     c.NumericGrade = _GradeDTO.NumericGrade;
                     c.SchoolId = _GradeDTO.SchoolId;
                     c.SectionId = _GradeDTO.SectionId;
@@ -187,12 +184,16 @@ namespace DOOR.Server.Controllers.UD
 
 
         [HttpDelete]
-        [Route("DeleteGrade/{_SchoolId}")]
-        public async Task<IActionResult> DeleteGrade(int _SchoolId)
+        [Route("DeleteGrade/{_SchoolId}/{_StudentId}/{_SectionId}/{_GradeTypeCode}/{_GradeCodeOccurrence}")]
+        public async Task<IActionResult> DeleteGrade(int _SchoolId, int _StudentId, int _SectionId, string _GradeTypeCode, int _GradeCodeOccurrence)
         {
             try
             {
-                Grade c = await _context.Grades.Where(x => x.SchoolId == _SchoolId).FirstOrDefaultAsync();
+                Grade? c = await _context.Grades.Where(x => x.SchoolId == _SchoolId).Where(x => x.SchoolId == _SchoolId)
+                .Where(x => x.StudentId == _StudentId)
+                .Where(x => x.SectionId == _SectionId)
+                .Where(x => x.GradeTypeCode == _GradeTypeCode)
+                .Where(x => x.GradeCodeOccurrence == _GradeCodeOccurrence).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
